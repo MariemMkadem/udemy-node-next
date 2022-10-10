@@ -1,24 +1,36 @@
 import { useState } from "react";
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import { SyncOutlined } from "@ant-design/icons";
+import Link from 'next/link';
+
 
 const Register = () => {
 
-    const [name, setName] = useState('mariem')
-    const [email, setEmail] = useState('mariem.mkadem@outlook.com')
-    const [password, setPassword] = useState('mariem')
 
+    const [name, setName] = useState('mkadem')
+    const [email, setEmail] = useState('mariem.mkadem@outlook.com')
+    const [password, setPassword] = useState('mkadem')
+    const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        //console.table({ name, email, password })
-        const {data} = await axios.post(`http://localhost:8000/api/register`, {
-            name, 
-            email,
-            password
-        })
-        console.log('data', data)
+        try {
+            setLoading(true)
+            const { data } = await axios.post(`api/register`, {
+                name,
+                email,
+                password
+            })
+            //console.log('data', data)
+            toast('Registration succesful. Please login')
+            setLoading(false)
+        }
+        catch (err) {
+            toast(err.response.data)
+            setLoading(false)
 
-
+        }
     }
     return (
         <>
@@ -48,8 +60,18 @@ const Register = () => {
                         onChange={e => setPassword(e.target.value)}
                         required
                     />
-                    <button type="submit" className="btn btn-block btn-primary">Submit </button>
+                    <button
+                        type="submit"
+                        className="btn btn-block btn-primary"
+                        disabled={!name || !email || !password || loading}>
+                        {loading ? <SyncOutlined spin /> : "Submit"}
+                    </button>
                 </form>
+                <p className="text-center p-3"> Already registred ?
+                    <Link href="/login">
+                        <a> Login</a>
+                    </Link>
+                </p>
 
             </div>
         </>
