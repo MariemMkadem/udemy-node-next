@@ -22,14 +22,13 @@ const Register = () => {
                 email,
                 password
             })
-            //console.log('data', data)
+
             toast('Registration succesful. Please login')
             setLoading(false)
         }
         catch (err) {
             toast(err.response.data)
             setLoading(false)
-
         }
     }
     return (
