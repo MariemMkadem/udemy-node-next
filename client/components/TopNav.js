@@ -5,15 +5,12 @@ import {
     AppstoreAddOutlined,
     LoginOutlined,
     UserAddOutlined,
-    LogoutOutlined,
     CoffeeOutlined
 } from '@ant-design/icons'
 import axios from "axios"
 import { useRouter } from "next/router"
 import { toast } from "react-toastify"
 import { Context } from '../context';
-
-
 
 const { Item, SubMenu } = Menu;
 
@@ -39,6 +36,7 @@ const TopNav = () => {
         router.push('/login')
 
     }
+
     return (
         <Menu mode="horizontal" selectedKeys={[current]}>
             <Item
