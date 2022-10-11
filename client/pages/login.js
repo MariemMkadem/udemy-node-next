@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { SyncOutlined } from "@ant-design/icons";
 import Link from 'next/link';
+import { Context } from '../context'
 
 
 const Login = () => {
@@ -10,6 +11,9 @@ const Login = () => {
     const [email, setEmail] = useState('mariem.mkadem@outlook.com')
     const [password, setPassword] = useState('mkadem')
     const [loading, setLoading] = useState(false)
+
+    //state
+    const { state, dispatch } = useContext(Context)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,7 +24,10 @@ const Login = () => {
                 password
             })
 
-            console.log(data)
+            dispatch({
+                type: "LOGIN",
+                payload: data
+            })
 
             setLoading(false)
         }
