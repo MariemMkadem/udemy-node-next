@@ -1,4 +1,6 @@
 import { useReducer, createContext, useEffect } from 'react';
+import axios from'axios'; 
+import {useRouter} from 'next/router'
 
 //initial state
 const initialState = {
@@ -24,6 +26,7 @@ const rootReducer = (state, action) => {
 //context provider
 const Provider = ({ children }) => {
     const [state, dispatch] = useReducer(rootReducer, initialState)
+    const router = useRouter();
     useEffect(() => {
         dispatch({
             type: "LOGIN",
@@ -31,6 +34,35 @@ const Provider = ({ children }) => {
         })
 
     }, [])
+
+    axios.interceptors.response.use(
+        (response)=> {
+            //any status code tha lie within the range of 2XX cause this function to trigger 
+            return response
+
+    }, (error)=> {
+        //any status code that falls outside the range of 2XX cause this function to trigger 
+        let res= error.response;
+        if(res.state === 401 && res.config && !res.config.__isRetryRequest){
+            return new Promise((resolve, reject)=> {
+                axios.get('/api/logout')
+                .then((data)=> {
+                    console.log('/401 error > logout')
+                    dispatch({type : 'LOGOUT'})
+                    window.localStorage.removeItem("user")
+                    router.push('/login')
+                })
+                .catch(err => {
+                    console.log("AXIOS INTERSPECTORS ERR", err)
+                    reject(error);
+                })
+            })
+
+        }
+
+        return Promise.reject(error)
+
+    })
 
 
     return (
