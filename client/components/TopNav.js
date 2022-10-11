@@ -5,7 +5,8 @@ import {
     AppstoreAddOutlined,
     LoginOutlined,
     UserAddOutlined,
-    LogoutOutlined
+    LogoutOutlined,
+    CoffeeOutlined
 } from '@ant-design/icons'
 import axios from "axios"
 import { useRouter } from "next/router"
@@ -14,12 +15,13 @@ import { Context } from '../context';
 
 
 
-const { Item } = Menu;
+const { Item, SubMenu } = Menu;
 
 const TopNav = () => {
     const [current, setCurrent] = useState("")
     const { state, dispatch } = useContext(Context)
     const router = useRouter();
+    const { user } = state;
 
     useEffect(() => {
         process.browser && setCurrent(window.location.pathname)
@@ -49,32 +51,37 @@ const TopNav = () => {
                     </a>
                 </Link>
             </Item>
+            {user === null ? (
+                <>
+                    <Item
+                        key="/login"
+                        onClick={e => setCurrent(e.key)}
+                        icon={<LoginOutlined />}>
+                        <Link href='/login'>
+                            <a>
+                                Login
+                            </a>
+                        </Link>
+                    </Item>
 
-            <Item
-                key="/login"
-                onClick={e => setCurrent(e.key)}
-                icon={<LoginOutlined />}>
-                <Link href='/login'>
-                    <a>
-                        Login
-                    </a>
-                </Link>
-            </Item>
-
-            <Item
-                key="/register"
-                onClick={e => setCurrent(e.key)}
-                icon={<UserAddOutlined />}>
-                <Link href='/register'>
-                    <a>
-                        Regsiter
-                    </a>
-                </Link>
-            </Item>
-
-            <Item className="float-right" onClick={logout} icon={<LogoutOutlined />}>
-                Logout
-            </Item>
+                    <Item
+                        key="/register"
+                        onClick={e => setCurrent(e.key)}
+                        icon={<UserAddOutlined />}>
+                        <Link href='/register'>
+                            <a>
+                                Regsiter
+                            </a>
+                        </Link>
+                    </Item>
+                </>
+            ) :
+                <SubMenu icon={<CoffeeOutlined />} title={user && user.name} className="float-right">
+                    <Item className="float-right" onClick={logout}>
+                        Logout
+                    </Item>
+                </SubMenu>
+            }
         </Menu>
 
     )
